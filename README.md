@@ -25,3 +25,7 @@ D3 7.9.0 (ISC license, included in `dist/vendor/D3-LICENSE`); official projectio
 ## Tests and scope
 
 Five tests cover source-record preservation, rankings/search/filter intersections, map projection of all cities, proportional marker area, and invalid records. Browser review verifies rendering and interaction. The site is published as an AI-assisted redesign of the original coursework. No Azure or database changes.
+
+## Visual identity
+
+The urban-observatory edition uses a full-width midnight cartographic workspace, cyan markers, chartreuse selection, a searchable directory rail and coordinate readouts. A decorative selection reticle follows the chosen city. The mobile layout brings the map before the directory. Native CSS handles short entrance/selection effects and respects reduced-motion preferences; no paid assets, additional libraries or live-data claims were introduced.

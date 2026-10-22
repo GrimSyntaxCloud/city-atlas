@@ -4,7 +4,11 @@ const $=id=>document.getElementById(id); const svg=d3.select('#map');
 let cities=[],selected=null,filtered=[];
 const projection=d3.geoAlbersUsa().translate([500,300]).scale(1200);
 function selectCity(city){
- selected=city;$('selected-rank').textContent=`CITY ${String(city.rank).padStart(2,'0')} / ${cities.length}`;
+ selected=city;
+ const point=projection([city.longitude,city.latitude]);
+ svg.selectAll('.location-reticle').remove();
+ if(point){const reticle=svg.append('g').attr('class','location-reticle').attr('aria-hidden','true').attr('transform',`translate(${point[0]},${point[1]})`);reticle.append('circle').attr('r',radius(city.population)+12);reticle.append('path').attr('d','M-44,0H-31 M31,0H44 M0,-44V-31 M0,31V44');}
+ $('selected-rank').textContent=`CITY ${String(city.rank).padStart(2,'0')} / ${cities.length}`;
  $('selected-city').textContent=city.name;$('selected-population').textContent=formatPopulation(city.population);
  $('selected-coordinates').textContent=`${Math.abs(city.latitude).toFixed(2)}° ${city.latitude<0?'S':'N'} / ${Math.abs(city.longitude).toFixed(2)}° ${city.longitude<0?'W':'E'}`;
  svg.selectAll('.city-marker').classed('selected',d=>d.id===city.id).attr('aria-pressed',d=>String(d.id===city.id));
