@@ -9,13 +9,20 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      npm_config_fetch_timeout: '30000'
+      npm_config_fetch_retries: '2'
+      npm_config_fetch_retry_mintimeout: '1000'
+      npm_config_fetch_retry_maxtimeout: '5000'
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: '22'
           cache: npm
-      - run: npm ci --ignore-scripts
+      - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm audit --audit-level=low
       - run: npm test
       - run: npm run build
