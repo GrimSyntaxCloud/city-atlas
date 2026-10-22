@@ -1,0 +1,7 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';import {csvParse,geoAlbersUsa} from 'd3';import {normalizeCities,filterCities,radius} from './model.js';
+const raw=csvParse(await readFile('data/us-cities.csv','utf8'));const cities=normalizeCities(raw);
+test('preserves all 50 original cities and ranks them by population',()=>{assert.equal(cities.length,50);assert.equal(cities[0].name,'New York');assert.equal(cities[0].population,8491079);for(let i=1;i<cities.length;i++)assert.ok(cities[i-1].population>=cities[i].population);});
+test('case-insensitive search intersects the rank filter',()=>{assert.equal(filterCities(cities,' NEW YORK ',10).length,1);assert.equal(filterCities(cities,'not a city').length,0);assert.equal(filterCities(cities,'',25).length,25);assert.equal(filterCities(cities,'Los Angeles',1).length,0);});
+test('every original city projects into the US map',()=>{const p=geoAlbersUsa();for(const city of cities){const point=p([city.longitude,city.latitude]);assert.ok(point?.every(Number.isFinite),city.name);}});
+test('marker area remains proportional to population',()=>{assert.ok(Math.abs(radius(4000000)/radius(1000000)-2)<1e-9);assert.equal(radius(-1),0);});
+test('invalid population and coordinate rows are excluded',()=>{assert.equal(normalizeCities([{name:'Bad',population:5,latitude:100,longitude:0},{name:'Good',population:25,latitude:40,longitude:-70}]).length,1);});
